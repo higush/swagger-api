@@ -1,134 +1,161 @@
----
 swagger: "2.0"
-info:
-  version: "1.0.0"
+info: # infoオブジェクト
   title: "Shop&Go WebAPI Document"
-host: "localhost:8080"
+  version: "1.0.0"
+host: "sg-swagger.digi-thq.com"
 basePath: "/v1"
-tags:
-- name: "Application"
-  description: "スマホアプリで使用するAPI\nAPI to use in application.\n"
-- name: "Server"
-  description: "店舗サーバで使うAPI\nAPI yo use in store server.\n"
-- name: "REGI"
-  description: "精算機で使うAPI\nAPI to use in payment station.\n"
-- name: "CR5.0"
-  description: "CR5.0（既設システム接続）仕様のAPI\nAPI to use in CR5,0.\n"
 schemes:
 - "https"
-- "http"
-paths:
+- "http" #CR5.0でのみ使う(店舗内通信)
+tags: 
+- name: "Application"
+  description: |
+              スマホアプリで使用するAPI
+              API to use in application.
+- name: "Server"
+  description: |
+              店舗サーバで使うAPI
+              API yo use in store server.
+- name: "REGI"
+  description: |
+              精算機で使うAPI
+              API to use in payment station.
+- name: "CR5.0"
+  description: |
+              CR5.0（既設システム接続）仕様のAPI
+              API to use in CR5,0.
+
+
+paths: # pathsオブジェクト
   /guest/uses/initiate/:
     post:
-      tags:
+      tags: 
       - "Application"
-      summary: "アプリ用APIキー・ユーザID発行\nCreate API Key and User ID for application.\n"
-      description: "初回ログイン時に、APIキーとユーザIDを発行\nObtains the list of nearby stores using\
-        \ location information.\n"
-      operationId: "guestUsesInitiatePOST"
+      summary: |
+              アプリ用APIキー・ユーザID発行
+              Create API Key and User ID for application.
+      description: | 
+                  初回ログイン時に、APIキーとユーザIDを発行
+                  Obtains the list of nearby stores using location information.
       produces:
       - "application/json"
-      parameters:
+      parameters: 
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/successInitiate"
+            $ref: '#/definitions/successInitiate'
         403:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /guest/user/token/:
     post:
-      tags:
+      tags: 
       - "Application"
-      summary: "アプリ用JWTの発行\nCreate JWT for application.\n"
-      description: "アクセス毎にForm認証を行い、json web tokenを発行する。以降、Headerに必ずセットする。\n(現状は匿名\
-        会員のため、認証するユーザーIDとパスワードは固定の自動認証。将来的にログインにて発行)\n"
-      operationId: "guestUserTokenPOST"
-      parameters:
+      summary: |
+              アプリ用JWTの発行
+              Create JWT for application.
+      description: |
+                  アクセス毎にForm認証を行い、json web tokenを発行する。以降、Headerに必ずセットする。
+                  (現状は匿名会員のため、認証するユーザーIDとパスワードは固定の自動認証。将来的にログインにて発行)
+      parameters: 
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
-      - in: "body"
-        name: "body"
-        description: "ユーザID\nUser ID\n"
+        required: true
+      - name: "body"
+        in: "body"
+        description: |
+                    ユーザID
+                    User ID
         required: true
         schema:
-          $ref: "#/definitions/createToken"
+          $ref: '#/definitions/createToken'
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/successToken"
+            $ref: '#/definitions/successToken'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /guest/uses/versioncheck/:
     get:
-      tags:
+      tags: 
       - "Application"
-      summary: "バージョンチェック\nVersion check.\n"
-      description: "アプリ起動時に、使用可能バージョンであるかチェックする\nWhen the application is turned on,\
-        \ it confirms whether the current application version is usable or not.\n"
-      operationId: "guestUsesVersioncheckGET"
+      summary: |
+              バージョンチェック
+              Version check.
+      description: |
+                  アプリ起動時に、使用可能バージョンであるかチェックする
+                  When the application is turned on, it confirms whether the current application version is usable or not.
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/successVerChk"
+            $ref: '#/definitions/successVerChk'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /company/store/initiate/:
     post:
-      tags:
+      tags: 
       - "Server"
-      summary: "店舗用APIキー・ユーザID発行　　　　　　　　　　　　　　　　　　\nCreate API Key and User ID for\
-        \ store server.\n"
-      description: "初回アクセス時に、APIキーとユーザIDを発行\nObtains the list of nearby stores using\
-        \ location information.\n"
-      operationId: "companyStoreInitiatePOST"
-      parameters:
+      summary: |
+              店舗用APIキー・ユーザID発行　　　　　　　　　　　　　　　　　　
+              Create API Key and User ID for store server.
+      description: |
+                  初回アクセス時に、APIキーとユーザIDを発行
+                  Obtains the list of nearby stores using location information.
+      parameters: 
       - name: "X-STORE-NAME"
         in: "header"
         required: true
@@ -143,23 +170,28 @@ paths:
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess          \n"
+          description: |
+                        正常終了
+                        success          
           schema:
-            $ref: "#/definitions/successInitiate"
+            $ref: '#/definitions/successInitiate'
         404:
-          description: "異常終了\nerror          \n"
+          description: |
+                      異常終了
+                      error          
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
   /company/store/token/:
     post:
-      tags:
+      tags: 
       - "Server"
-      summary: "店舗用JWTの発行\nCreate JWT for store.\n"
-      description: "アクセス毎にForm認証を行い、json web tokenを発行する。以降、Headerに必ずセットする。\n(現状は匿名\
-        会員のため、認証するユーザーIDとパスワードは固定の自動認証。将来的にログインにて発行)\n"
-      operationId: "companyStoreTokenPOST"
-      parameters:
+      summary: |
+              店舗用JWTの発行
+              Create JWT for store.
+      description: |
+                  アクセス毎にForm認証を行い、json web tokenを発行する。以降、Headerに必ずセットする。
+                  (現状は匿名会員のため、認証するユーザーIDとパスワードは固定の自動認証。将来的にログインにて発行)
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
         required: true
@@ -178,130 +210,127 @@ paths:
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/successToken"
+            $ref: '#/definitions/successToken'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
-  /guest/store-list{latitude}{longitude}{scale}:
+            $ref: '#/definitions/error'
+  /guest/store-list:
     get:
-      tags:
+      tags: 
       - "Application"
-      summary: "店舗一覧取得\nGet store-List\n"
-      description: "位置情報から近傍の入店候補の店舗一覧を取得\nObtains the list of nearby stores using\
-        \ location information.\n"
-      operationId: "guestStore_listlatitudelongitudescaleGET"
-      parameters:
+      summary: |
+              店舗一覧取得
+              Get store-List
+      description: |
+                  位置情報から近傍の入店候補の店舗一覧を取得
+                  Obtains the list of nearby stores using location information.
+      parameters: 
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "latitude"
-        in: "path"
+        in: "query"
         required: true
         type: "string"
       - name: "longitude"
-        in: "path"
+        in: "query"
         required: true
         type: "string"
       - name: "scale"
-        in: "path"
+        in: "query"
         required: true
         type: "integer"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/successStoreList"
+            $ref: '#/definitions/successStoreList'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /guest/companies/{companyCode}/stores/{storeCode}/:
     get:
-      tags:
+      tags: 
       - "Application"
-      summary: "入店処理\nEntering a shop processing\n"
-      description: "企業コード・店舗コードから店舗情報を取得\nObtains store information using the company\
-        \ code and store code use it in Shop&Go application\n"
-      operationId: "guestCompaniesCompanyCodeStoresStoreCodeGET"
+      summary: |
+              入店処理
+              Entering a shop processing
+      description: |
+                  企業コード・店舗コードから店舗情報を取得
+                  Obtains store information using the company code and store code use it in Shop&Go application
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/successStoreGet"
+            $ref: '#/definitions/successStoreGet'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /company/store/:
     get:
-      tags:
+      tags: 
       - "Server"
-      summary: "店舗情報を取得\nGet store data.\n"
-      description: "企業コード・店舗コードから店舗情報を取得\nStore information using the company code\
-        \ and store code use it in third-party server\n"
-      operationId: "companyStoreGET"
-      parameters: []
-      responses:
-        200:
-          description: "正常終了\nsuccess\n"
-          schema:
-            $ref: "#/definitions/successStoreGet"
-        404:
-          description: "異常終了\nerror\n"
-          schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
-    post:
-      tags:
-      - "Server"
-      summary: "店舗情報を新規登録\nRegister the information of the store newly.\n"
-      description: "企業コード・店舗コードから店舗情報を新規登録\nCreates or change store information using\
-        \ the company code and store code.\n"
-      operationId: "companyStorePOST"
+      summary: |
+              店舗情報を取得
+              Get store data.
+      description: |
+                  企業コード・店舗コードから店舗情報を取得
+                  Store information using the company code and store code use it in third-party server
       parameters:
       - name: "X-EX-API-KEY"
         in: "header"
@@ -323,30 +352,80 @@ paths:
         in: "header"
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
-        description: "ユーザID\nUser ID\n"
-        required: true
-        schema:
-          $ref: "#/definitions/storePOST"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/successStoreGet'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
+    post:
+      tags: 
+      - "Server"
+      summary: |
+              店舗情報を新規登録
+              Register the information of the store newly.
+      description: |
+                  企業コード・店舗コードから店舗情報を新規登録
+                  Creates or change store information using the company code and store code.
+      parameters:
+      - name: "X-EX-API-KEY"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORE-TOKEN"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORE-NAME"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORESERVER-VERSION"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORESERVER-OS-TYPE"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: |
+                    ユーザID
+                    User ID
+        required: true
+        schema:
+          $ref: '#/definitions/storePOST'
+      responses:
+        200:
+          description: |
+                      正常終了
+                      success
+          schema:
+            $ref: '#/definitions/success'
+        404:
+          description: |
+                      異常終了
+                      error
+          schema:
+            $ref: '#/definitions/error'
   /company/store/activate/:
     patch:
-      tags:
+      tags: 
       - "Server"
-      summary: "店舗稼働フラグの更新\nUpdates store activeFlag\n"
-      description: "店舗マスタの店舗稼働フラグを更新する\nUpdates store information using the company\
-        \ code and store code.\n"
-      operationId: "companyStoreActivatePATCH"
+      summary: |
+              店舗稼働フラグの更新
+              Updates store activeFlag
+      description: |
+                  店舗マスタの店舗稼働フラグを更新する
+                  Updates store information using the company code and store code.
       parameters:
       - name: "X-EX-API-KEY"
         in: "header"
@@ -370,27 +449,33 @@ paths:
         type: "string"
       - name: "activeFlag"
         in: "query"
-        required: true
         type: "integer"
         format: "int8"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
   /company/:
     get:
-      tags:
+      tags: 
       - "Server"
-      summary: "企業情報を取得\nGet company data.\n"
-      description: "企業コードから企業情報を取得\nObtains store information using the company code.\n"
-      operationId: "companyGET"
-      parameters:
+      summary: |
+              企業情報を取得
+              Get company data.
+      description: |
+                  企業コードから企業情報を取得
+                  Obtains store information using the company code.
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
         required: true
@@ -413,114 +498,149 @@ paths:
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/successCompanyGet"
+            $ref: '#/definitions/successCompanyGet'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
     post:
-      tags:
+      tags: 
       - "Server"
-      summary: "企業情報を新規登録\nRegister the information of the company newly.\n"
-      description: "企業コードから企業情報を新規登録\nCreates or change company information using\
-        \ the company code.\n"
-      operationId: "companyPOST"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: ""
-        required: false
+      summary: |
+              企業情報を新規登録
+              Register the information of the company newly.
+      description: |
+                  企業コードから企業情報を新規登録
+                  Creates or change company information using the company code.
+      parameters: 
+      - name: "X-EX-API-KEY"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORE-TOKEN"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORE-NAME"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORESERVER-VERSION"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-STORESERVER-OS-TYPE"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: |
+                    
         schema:
-          $ref: "#/definitions/companyPost"
+          $ref: '#/definitions/companyPost'
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
   /guest/company/{companyCode}/store/{storeCode}/instore-master/:
     get:
-      tags:
+      tags: 
       - "Application"
-      summary: "インストアマスタの取得\nGet instore-master\n"
-      description: "（ログイン(入店)処理が完了後）アプリがサーバからログイン店舗のインストアマスタを取得する。\nAfter Shop&Go\
-        \ login processing is completion,acquire an in store master.\n"
-      operationId: "guestCompanyCompanyCodeStoreStoreCodeInstore_masterGET"
+      summary: |
+              インストアマスタの取得
+              Get instore-master
+      description: |
+                  （ログイン(入店)処理が完了後）アプリがサーバからログイン店舗のインストアマスタを取得する。
+                  After Shop&Go login processing is completion,acquire an in store master.
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
-  /guest/company/{companyCode}/store/{storeCode}/items/{barcode}:
+            $ref: '#/definitions/error'
+  /guest/company/{companyCode}/store/{storeCode}/items/{barcode}  :
     get:
-      tags:
+      tags: 
       - "Application"
-      summary: "商品マスタ情報を取得\nObtains item master data.\n"
-      description: "商品マスタ情報を取得する（バーコードスキャン時etc.）\nObtains item master data using the\
-        \ item code use it in Shop&Go application.\n"
-      operationId: "guestCompanyCompanyCodeStoreStoreCodeItemsBarcodeGET"
-      parameters:
+      summary: |
+              商品マスタ情報を取得
+              Obtains item master data.
+      description: |
+                  商品マスタ情報を取得する（バーコードスキャン時etc.）
+                  Obtains item master data using the item code use it in Shop&Go application.
+      parameters: 
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "barcode"
         in: "path"
         description: "バーコード文字列"
@@ -528,25 +648,30 @@ paths:
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/successItemGET"
+            $ref: '#/definitions/successItemGET'
         404:
-          description: "以上終了\nerror\n"
+          description: |
+                      以上終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /company/store/items/{barcode}:
-    get:
+    get: # getメソッドのoperationオブジェクト
       tags:
       - "Server"
-      summary: "商品マスタの取得。\nObtains item master data.\n"
-      description: "既設メンテナンスシステムにて、商品コードをキーにして、商品マスタを取得する。\nObtains item master data\
-        \ using the item code use it in third-party server.\n"
-      operationId: "companyStoreItemsBarcodeGET"
+      summary: |
+              商品マスタの取得。
+              Obtains item master data.
+      description: |
+                  既設メンテナンスシステムにて、商品コードをキーにして、商品マスタを取得する。
+                  Obtains item master data using the item code use it in third-party server.
       produces:
       - "application/json"
-      parameters:
+      parameters: # parameterオブジェクトの配列
       - name: "X-EX-API-KEY"
         in: "header"
         required: true
@@ -571,24 +696,29 @@ paths:
         in: "path"
         required: true
         type: "string"
-      responses:
+      responses: # responsesオブジェクト
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/successItemGET"
+            $ref: '#/definitions/successItemGET' 
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
     delete:
-      tags:
+      tags: 
       - "Server"
-      summary: "商品マスタ情報を削除\nDeletes item master data.\n"
-      description: "商品コードをキーにして、商品マスタ情報を削除\nDeletes item master data using the item\
-        \ code.\n"
-      operationId: "companyStoreItemsBarcodeDELETE"
-      parameters:
+      summary: |
+              商品マスタ情報を削除
+              Deletes item master data.
+      description: |
+                  商品コードをキーにして、商品マスタ情報を削除
+                  Deletes item master data using the item code.
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
         required: true
@@ -615,25 +745,30 @@ paths:
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
             $ref: "#/definitions/success"
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
             $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
   /company/store/items/:
     post:
-      tags:
+      tags: 
       - "Server"
-      summary: "商品マスタの新規登録\nRegister the information of the item-master newly.\n"
-      description: "既設メンテナンスシステムにて、商品コードをキーにし、商品マスタに新規登録する。\nCreates item master data\
-        \ using the item code.\n"
-      operationId: "companyStoreItemsPOST"
-      produces:
+      summary: |
+              商品マスタの新規登録
+              Register the information of the item-master newly.
+      description: |
+                  既設メンテナンスシステムにて、商品コードをキーにし、商品マスタに新規登録する。
+                  Creates item master data using the item code.
+      produces: 
       - "application/json"
-      parameters:
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
         required: true
@@ -654,28 +789,32 @@ paths:
         in: "header"
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
+      - name: "body"
+        in: "body"
         required: true
         schema:
-          $ref: "#/definitions/itemPOST"
+          $ref: '#/definitions/itemPOST' 
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
   /company/store/plural-items/:
     get:
-      tags:
+      tags: 
       - "Server"
-      summary: "複数商品登録用URLの返却\n"
-      description: "複数商品登録用に作成したファイルの、保存先URLを返す\n"
-      operationId: "companyStorePlural_itemsGET"
+      summary: |
+              複数商品登録用URLの返却
+      description: |
+                  複数商品登録用に作成したファイルの、保存先URLを返す
       parameters:
       - name: "X-EX-API-KEY"
         in: "header"
@@ -699,22 +838,26 @@ paths:
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/successPluralGET"
+            $ref: '#/definitions/successPluralGET'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
   /company/store/plural_items/status/{file_number}:
     get:
-      tags:
+      tags: 
       - "Server"
-      summary: "複数アイテム登録用ファイルの進捗確認\n"
-      description: "複数アイテム登録様に、サーバに上げたファイルの進捗状況を返す\n"
-      operationId: "companyStorePlural_itemsStatusFile_numberGET"
-      parameters:
+      summary: |
+              複数アイテム登録用ファイルの進捗確認
+      description: |
+                  複数アイテム登録様に、サーバに上げたファイルの進捗状況を返す
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
         required: true
@@ -741,1833 +884,1946 @@ paths:
         type: "number"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/successPluralStatusGET"
+            $ref: '#/definitions/successPluralStatusGET'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Server"
+            $ref: '#/definitions/error'
   /guest/company/{companyCode}/store/{storeCode}/carts/:
     post:
-      tags:
+      tags: 
       - "Application"
-      summary: "カートIDを作成・取得\nCreate and Get cart ID.\n"
-      description: "バーチャルショッピングカートを作成。カートID取得(スマホに返す)\nCreates ID of shopping cart\
-        \ and returns it to the smartphone.\n"
-      operationId: "guestCompanyCompanyCodeStoreStoreCodeCartsPOST"
+      summary: |
+              カートIDを作成・取得
+              Create and Get cart ID.
+      description: |
+                  バーチャルショッピングカートを作成。カートID取得(スマホに返す)
+                  Creates ID of shopping cart and returns it to the smartphone.
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/appCartPOST"
+            $ref: '#/definitions/appCartPOST'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /REGI/carts/{cartID}/items/:
     get:
-      tags:
+      tags: 
       - "REGI"
-      summary: "商品リストのデータを取得\nObtains data of the item list.\n"
-      description: "対応するバーチャルショッピングカート内の商品リストのデータを取得する。\nObtains data of the item\
-        \ list from a virtual shopping cart using the shopping cart ID.\n"
-      operationId: "rEGICartsCartIDItemsGET"
-      parameters:
+      summary: |
+              商品リストのデータを取得
+              Obtains data of the item list.
+      description: |
+                  対応するバーチャルショッピングカート内の商品リストのデータを取得する。
+                  Obtains data of the item list from a virtual shopping cart using the shopping cart ID.
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-STORE-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "cartID"
         in: "path"
         required: true
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/successCartIDGET"
+            $ref: '#/definitions/successCartIDGET'
         404:
-          description: "異常終了\nerror\n"
+          description:  |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "REGI"
+            $ref: '#/definitions/error'
   /guest/company/{companyCode}/store/{storeCode}/carts/{cartID}/register/:
     post:
-      tags:
+      tags: 
       - "Application"
-      summary: "商品一覧をカートへ登録\nRegisters the list of scanned items to the cart.\n"
-      description: "スマートフォンローカル内の商品一覧を、バーチャルショッピングカートに登録するAPI\nRegisters the list\
-        \ of scanned items in the smartphone to the virtual shopping cart.\n"
-      operationId: "guestCompanyCompanyCodeStoreStoreCodeCartsCartIDRegisterPOST"
+      summary: |
+              商品一覧をカートへ登録
+              Registers the list of scanned items to the cart.
+      description: |
+                  スマートフォンローカル内の商品一覧を、バーチャルショッピングカートに登録するAPI
+                  Registers the list of scanned items in the smartphone to the virtual shopping cart.
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true      
       - name: "cartID"
         in: "path"
         required: true
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                        正常終了
+                        success
           schema:
-            $ref: "#/definitions/appItemPOST"
+            $ref: '#/definitions/appItemPOST'
         404:
-          description: "異常終了\nerror\n"
+          description:  |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /guest/company/{companyCode}/store/{storeCode}/carts/{cartID}/shopping-status/:
     get:
-      tags:
+      tags: 
       - "Application"
-      summary: "カート状態を取得\nObtains the status of the cart.\n"
-      description: "対応するバーチャルショッピングカート内の状態を取得する。\nObtains the status of the virtual\
-        \ shopping cart using the shopping cart ID.\n"
-      operationId: "guestCompanyCompanyCodeStoreStoreCodeCartsCartIDShopping_statusGET"
+      summary: |
+              カート状態を取得
+              Obtains the status of the cart.
+      description: |
+                  対応するバーチャルショッピングカート内の状態を取得する。
+                  Obtains the status of the virtual shopping cart using the shopping cart ID.
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true      
       - name: "cartID"
         in: "path"
         required: true
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/appCartStatusGET"
+            $ref: '#/definitions/appCartStatusGET'
         404:
-          description: "異常終了\nerror\n"
+          description:  |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /REGI/company/store/carts/{cartID}/payment-status/:
     get:
-      tags:
+      tags: 
       - "REGI"
-      summary: "カート状態を取得\nObtains the status of the cart.\n"
-      description: "対応するバーチャルショッピングカート内の状態を取得する。\nObtains the status of the virtual\
-        \ shopping cart using the shopping cart ID.\n"
-      operationId: "rEGICompanyStoreCartsCartIDPayment_statusGET"
-      parameters:
+      summary: |
+              カート状態を取得
+              Obtains the status of the cart.
+      description: |
+                  対応するバーチャルショッピングカート内の状態を取得する。
+                  Obtains the status of the virtual shopping cart using the shopping cart ID.
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-STORE-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "cartID"
         in: "path"
         required: true
         type: "string"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/REGICartStatusGET"
+            $ref: '#/definitions/REGICartStatusGET'
         404:
-          description: "異常終了\nerror\n"
+          description:  |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "REGI"
+            $ref: '#/definitions/error'
   /guest/company/{companyCode}/store/{storeCode}/carts/{cartID}/uploaded/:
     patch:
-      tags:
+      tags: 
       - "Application"
-      summary: "カート状態を変更\nChanges the status of the cart.\n"
-      description: "スマホアプリがショッピングカートの状態を変更する。\nChanges the status of the virtual shopping\
-        \ cart using the shopping cart ID.\n"
-      operationId: "guestCompanyCompanyCodeStoreStoreCodeCartsCartIDUploadedPATCH"
+      summary: |
+              カート状態を変更
+              Changes the status of the cart.
+      description: |
+                  スマホアプリがショッピングカートの状態を変更する。
+                  Changes the status of the virtual shopping cart using the shopping cart ID.
       parameters:
       - name: "X-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-APP-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "companyCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       - name: "storeCode"
         in: "path"
-        required: true
         type: "string"
+        required: true      
       - name: "cartID"
         in: "path"
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
+      - name: "body"
+        in: "body"
         required: true
         schema:
-          $ref: "#/definitions/appCartStatusPATCH"
+          $ref: '#/definitions/appCartStatusPATCH' 
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description:  |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "Application"
+            $ref: '#/definitions/error'
   /REGI/company/store/carts/{cartID}/terminated/:
     patch:
-      tags:
+      tags: 
       - "REGI"
-      summary: "カート状態を変更\nChanges the status of the cart.\n"
-      description: "ショッピングカートの状態を変更する。\nChanges the status of the virtual shopping\
-        \ cart using the shopping cart ID.\n"
-      operationId: "rEGICompanyStoreCartsCartIDTerminatedPATCH"
-      parameters:
+      summary: |
+              カート状態を変更
+              Changes the status of the cart.
+      description: |
+                  ショッピングカートの状態を変更する。
+                  Changes the status of the virtual shopping cart using the shopping cart ID.
+      parameters: 
       - name: "X-EX-API-KEY"
         in: "header"
-        required: true
         type: "string"
+        required: true
       - name: "X-STORE-TOKEN"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "cartID"
         in: "path"
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
+      - name: "body"
+        in: "body"
         required: true
         schema:
-          $ref: "#/definitions/REGICartStatusPATCH"
+          $ref: '#/definitions/REGICartStatusPATCH' 
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/success"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description:  |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "REGI"
+            $ref: '#/definitions/error'
   /ex/staff/{staffCode}:
     get:
-      tags:
+      tags: 
       - "CR5.0"
-      summary: "従業員コードの確認\nConfirms a staff code.\n"
-      description: "精算機で読み取られた従業員コードが正しいか確認する\nConfirms whether a staff code is valid\
-        \ or not. Used when store associate tries to login to the maintenance mode\
-        \ on the payment station.\n"
-      operationId: "exStaffStaffCodeGET"
-      parameters:
+      summary: |
+              従業員コードの確認
+              Confirms a staff code.
+      description: |
+                  精算機で読み取られた従業員コードが正しいか確認する
+                  Confirms whether a staff code is valid or not. Used when store associate tries to login to the maintenance mode on the payment station.
+      parameters: 
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "staffCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/CRStaffGET"
+            $ref: '#/definitions/CRStaffGET'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "CR50"
+            $ref: '#/definitions/error'
   /ex/departments/{departmentCode}:
     get:
-      tags:
+      tags: 
       - "CR5.0"
-      summary: "部門名称の取得\nObtains department name.\n"
-      description: "入力された部門コードをキーにして部門名称を取得する\nObtains department name using the department\
-        \ code. Used when store associate registers a NonFile item by its department\
-        \ on a payment station.\n"
-      operationId: "exDepartmentsDepartmentCodeGET"
-      parameters:
+      summary: |
+              部門名称の取得
+              Obtains department name.
+      description: |
+                  入力された部門コードをキーにして部門名称を取得する
+                  Obtains department name using the department code. Used when store associate registers a NonFile item by its department on a payment station.
+      parameters: 
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "departmentCode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/CRDepartmentGET"
+            $ref: '#/definitions/CRDepartmentGET'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "CR50"
+            $ref: '#/definitions/error'
   /ex/items/{barcode}:
     post:
-      tags:
+      tags: 
       - "CR5.0"
-      summary: "商品情報を取得\nObtains item information.\n"
-      description: "商品コードをキーにして商品情報を取得する\nObtains item information using the item\
-        \ code. A store associate enters the item code of \"Unidentifiable\" items\
-        \ by scanning the barcode or manually keying it in on the payment station.\n"
-      operationId: "exItemsBarcodePOST"
-      parameters:
+      summary: |
+              商品情報を取得
+              Obtains item information.
+      description: |
+                  商品コードをキーにして商品情報を取得する
+                  Obtains item information using the item code. A store associate enters the item code of "Unidentifiable" items by scanning the barcode or manually keying it in on the payment station.
+      parameters: 
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "barcode"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/CRItemGET"
+            $ref: '#/definitions/CRItemGET'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "CR50"
+            $ref: '#/definitions/error'
   /ex/subtotal/:
     get:
-      tags:
+      tags: 
       - "CR5.0"
-      summary: "小計リクエストを行う\nSend back the calculated subtotal.\n"
-      description: "商品リストを既設POSに送信し、精算済みデータ（ジャーナルデータ）を受け取る\nThe payment station sends\
-        \ the item list obtained from the virtual shopping cart to the existing POS.\
-        \ The existing POS sends back the calculated subtotal to the payment station.\n"
-      operationId: "exSubtotalGET"
-      parameters:
+      summary: |
+              小計リクエストを行う
+              Send back the calculated subtotal.
+      description: |
+                  商品リストを既設POSに送信し、精算済みデータ（ジャーナルデータ）を受け取る
+                  The payment station sends the item list obtained from the virtual shopping cart to the existing POS. The existing POS sends back the calculated subtotal to the payment station.
+      parameters: 
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
-      - in: "body"
-        name: "body"
+        required: true        
+      - name: "body"
+        in: "body"
         required: true
         schema:
-          $ref: "#/definitions/CRSubtotal-paraPOST"
+            $ref: '#/definitions/CRSubtotal_paraPOST'
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/CRSubtotal-resPOST"
+            $ref: '#/definitions/CRSubtotal-resPOST'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "CR50"
+            $ref: '#/definitions/error'
   /ex/result/:
     post:
-      tags:
+      tags: 
       - "CR5.0"
-      summary: "精算済みデータを送信\nSending data of completed transactions.\n"
-      description: "精算済みデータ（ジャーナルデータ）を既設POSに送信する\nAPI for sending data of completed\
-        \ transactions from payment stations to existing POS systems.\n"
-      operationId: "exResultPOST"
-      parameters:
+      summary: |
+              精算済みデータを送信
+              Sending data of completed transactions.
+      description: |
+                  精算済みデータ（ジャーナルデータ）を既設POSに送信する
+                  API for sending data of completed transactions from payment stations to existing POS systems.
+      parameters: 
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true
+      - name: "body"
+        in: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/CRResultPOST"
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/CRResultPOST"
+            $ref: '#/definitions/success'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "CR50"
+            $ref: '#/definitions/error'
   /ex/members/{memberInfo}:
     get:
-      tags:
+      tags: 
       - "CR5.0"
-      summary: "他社ポイントサーバーから情報取得\nObtains points information from third-party points\
-        \ server.\n"
-      description: "他社ポイントサーバーからポイント情報を取得する　\n※{memberInfo}は会員コード、電話番号等の情報\nObtains\
-        \ points information from third-party points server using the member code.\
-        \ \n{memberInfo}：\"member code\", \"telephone number\" and so on.\n"
-      operationId: "exMembersMemberInfoGET"
-      parameters:
+      summary: |
+              他社ポイントサーバーから情報取得
+              Obtains points information from third-party points server.
+      description: |
+                  他社ポイントサーバーからポイント情報を取得する　
+                  ※{memberInfo}は会員コード、電話番号等の情報
+                  Obtains points information from third-party points server using the member code. 
+                  {memberInfo}："member code", "telephone number" and so on.
+      parameters: 
       - name: "X-REGI-VERSION"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "X-REGI-OS-TYPE"
         in: "header"
-        required: true
         type: "string"
+        required: true        
       - name: "memberInfo"
         in: "path"
-        required: true
         type: "string"
+        required: true
       responses:
         200:
-          description: "正常終了\nsuccess\n"
+          description: |
+                      正常終了
+                      success
           schema:
-            $ref: "#/definitions/CRMemberGET"
+            $ref: '#/definitions/CRMemberGET'
         404:
-          description: "異常終了\nerror\n"
+          description: |
+                      異常終了
+                      error
           schema:
-            $ref: "#/definitions/error"
-      x-swagger-router-controller: "CR50"
-definitions:
+            $ref: '#/definitions/error'
+
+
+definitions: 
+  # definitionsオブジェクト
+  # 命名方法は「1誰が、２何を、３どうした」の順で記載
+  # 例）appCartStatusGET
+  # 　 ⇒１appが、２CartStatusを、３GETした
   success:
     type: "object"
+    required: [
+      result,
+      message
+      ]
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int8"
+        example:  0
+        description:  "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
-    example:
-      result: 0
-      message: "message"
+        example:  success 
+        description:  "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
   error:
     type: "object"
+    required: [
+      result,
+      message,
+      errorList
+      ]
     properties:
       result:
         type: "integer"
+        format: "int64"
+        example:  1
+        description: "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
-        example: "failed"
+        example: error
+        description: "メッセージ。errorが返る。 | message. error is returned"
       errorList:
         type: "array"
         items:
-          $ref: "#/definitions/error_errorList"
+          type: "object"
+          required: [
+          code,
+          message
+          ]
+          properties:
+            code:
+              type: "string"
+              example: 12345
+              description: "エラー時にエラー内容を表わすコード。　｜　Code of the error."
+            message:
+              type: "string"
+              example: "network error"
+              description:  "エラー時にエラー内容を表示する文字列。　｜　Description of the error."
   createToken:
     type: "object"
+    required: [
+      UID,
+      password
+      ]
     properties:
       UID:
         type: "string"
+        example:  sampleStringUID
+        description:  "ユーザID。ユーザー判別用UUID。将来的な会員登録を考慮。　｜　User ID. UUID for user distinction.I consider a future sign-in."
       password:
         type: "string"
+        example:  pa55vv0rd
+        description:  "Password. Default is 「password」"
   successInitiate:
     type: "object"
+    required: [
+      result,
+      message,
+      API Key,
+      UID
+      ]
     properties:
       result:
         type: "integer"
         format: "int64"
+        example:  0
+        description: "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
+        example: success
+        description: "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
       API Key:
         type: "string"
+        example: sampleStringAPIkey
+        description:  "APIキー。端末判別用ユニークキー。一度発行したらスマホ側でも保持。　｜　API key. Unique key for terminal distinction. Even the smartphone side maintains it if I publish it once."
       UID:
         type: "string"
-    example:
-      result: 0
-      UID: "UID"
-      API Key: "API Key"
-      message: "message"
+        example: sampleStringUID
+        description:  "ユーザID。ユーザー判別用UUID。将来的な会員登録を考慮。　｜　User ID. UUID for user distinction.I consider a future sign-in."
   successToken:
     type: "object"
+    required: [
+      result,
+      message,
+      jsonWebToken
+      ]
     properties:
       result:
         type: "integer"
         format: "int64"
+        description: "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
-      JWT:
+        example: success
+        description: "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
+      jsonWebToken:
         type: "string"
-    example:
-      result: 0
-      JWT: "JWT"
-      message: "message"
+        example: sampleStringJWT
+        description:  "Json Web Token."
   successVerChk:
     type: "object"
+    required: [
+      result,
+      message,
+      updateFlag
+      ]
     properties:
       result:
         type: "integer"
         format: "int64"
+        description: "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
+        example:  success
+        description:  "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
       updateFlag:
         type: "integer"
         format: "int64"
+        example:  0
+        description:  "アップデートフラグ。0：アップデート不要　1：アップデート必須　｜　update flag. 0: do not have to update  1: must update"
       updateURL:
         type: "string"
-    example:
-      result: 0
-      updateFlag: 6
-      updateURL: "updateURL"
-      message: "message"
+        example:  
+        description:  "update URL。アプリのVer.UPが必要な場合（updateFlag = 1)、アップデート先のURLをセット  ｜　update URL. The URL for obtaining a new version of the app is set whenever a update is required."
   successStoreList:
     type: "object"
+    required: [
+      result,
+      message,
+      storeList
+      ]
     properties:
       result:
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       storeList:
         type: "array"
         items:
-          $ref: "#/definitions/successStoreList_storeList"
-    example:
-      result: 0
-      storeList:
-      - address:
-          address3: "address3"
-          address2: "address2"
-          address1: "address1"
-        company:
-          code: 6.02745618307040320615897144307382404804229736328125
-          name: "name"
-        location:
-          latitude: "latitude"
-          longitude: "longitude"
-        store:
-          code: 1.46581298050294517310021547018550336360931396484375
-          name: "name"
-        url:
-          ur2: "ur2"
-          ur3: "ur3"
-          url: "url"
-      - address:
-          address3: "address3"
-          address2: "address2"
-          address1: "address1"
-        company:
-          code: 6.02745618307040320615897144307382404804229736328125
-          name: "name"
-        location:
-          latitude: "latitude"
-          longitude: "longitude"
-        store:
-          code: 1.46581298050294517310021547018550336360931396484375
-          name: "name"
-        url:
-          ur2: "ur2"
-          ur3: "ur3"
-          url: "url"
-      message: "message"
+          type: "object"
+          required: [
+          company,
+          store,
+          location,
+          address,
+          url
+          ]
+          properties:
+            company:
+              $ref: '#/definitions/company'
+            store:
+              $ref: '#/definitions/store'
+            location:
+              $ref: '#/definitions/location'
+            address:
+              $ref: '#/definitions/address'
+            url:
+              $ref: '#/definitions/url'
   company:
     type: "object"
+    required: [
+      code,
+      name
+      ]
     properties:
       code:
         type: "number"
+        example:  12345
       name:
         type: "string"
-    example:
-      code: 6.02745618307040320615897144307382404804229736328125
-      name: "name"
+        example:  株式会社寺岡スーパー
   store:
     type: "object"
+    required: [
+      code,
+      name
+      ]
     properties:
       code:
         type: "number"
+        example:  123456789
       name:
         type: "string"
-    example:
-      code: 1.46581298050294517310021547018550336360931396484375
-      name: "name"
+        example:  寺岡スーパー久が原店
   location:
     type: "object"
+    required: [
+      latitude,
+      longitude
+      ]
     properties:
       latitude:
         type: "string"
+        example:  35.578104
       longitude:
-        type: "string"
-    example:
-      latitude: "latitude"
-      longitude: "longitude"
+        type: "string" 
+        example:  139.699371
   address:
     type: "object"
+    required: [
+      address1,
+      address2,
+      address3
+      ]
     properties:
       address1:
         type: "string"
+        example:  東京都
       address2:
         type: "string"
+        example:  大田区久が原
       address3:
         type: "string"
-    example:
-      address3: "address3"
-      address2: "address2"
-      address1: "address1"
+        example:  5-13-12
   url:
     type: "object"
+    required: [
+      url1,
+      url2,
+      url3
+      ]
     properties:
-      url:
+      url1:
         type: "string"
-      ur2:
+        example:  https://www.teraokaseiko.com/jp/
+      url2:
+        type: "string" 
+        example:  https://www.teraokaseiko.com/jp/products/
+      url3:
         type: "string"
-      ur3:
-        type: "string"
-    example:
-      ur2: "ur2"
-      ur3: "ur3"
-      url: "url"
+        example:  
   successStoreGet:
     type: "object"
+    required: [
+      result,
+      message,
+      companyName,
+      storeName,
+      location,
+      telephone,
+      openTime,
+      closeTime,
+      availableTimeFrom,
+      availableTimeTo,
+      maxScanItems,
+      enterpriseFlag,
+      timeZone,
+      pointFlag,
+      currency,
+      currencyPosition,
+      currencyRoundPosition,
+      zeroPaddingFlag,
+      activeFlag
+      ]
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
+        description:  "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
+        example:  success
+        description:  "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
       companyName:
         type: "string"
+        example:  株式会社寺岡スーパー
+        description:  "企業名称　｜　Company name"
       storeName:
         type: "string"
+        example:  寺岡スーパー久が原店
+        description:  "店舗名称　｜　Store name"
       location:
-        $ref: "#/definitions/location"
+        $ref: '#/definitions/location'
       address:
-        $ref: "#/definitions/address"
+        $ref: '#/definitions/address'
       telephone:
         type: "string"
+        example:  03-3752-1057
+        description:  "電話番号　｜　Telephone number"
       openTime:
         type: "string"
+        example:  "09:00:00"
+        description:  "開店時間　HH:MM:SS　｜　Open time　HH:MM:SS"
       closeTime:
         type: "string"
+        example:  "17:50:00"
+        description:  "閉店時間　HH:MM:SS　｜　Close time　HH:MM:SS"
       availableTimeFrom:
         type: "string"
+        example:  "10:00:00"
+        description:  "アプリ利用可能開始時間 HH:MM:SS　｜　The application is available after this time.　HH:MM:SS"
       availableTimeTo:
         type: "string"
+        example:  "16:59:59"
+        description:  "アプリ利用可能終了時間 HH:MM:SS　｜　The application is available before this time. HH:MM:SS"
       maxScanItems:
         type: "integer"
         format: "int64"
+        example:  100
+        description:  "最大商品登録数　｜　Maximum number of items that can be scanned"
       enterpriseFlag:
         type: "integer"
         format: "int64"
+        example:  1
+        description:  "既設システム接続フラグ　0：寺岡接続（solo）　1：既設システム接続（enterprise）　｜　Flag for identifying the POS type the system is connected to. 0: Connected to Digi POS systems 1: Connected to third-party POS systems."
       timeZone:
         type: "string"
+        example:  +0900
+        description:  "タイムゾーン（標準時間との時差）　±YYMM　｜　Time zone.　±YYMM"
       ulrList:
-        $ref: "#/definitions/url"
+        $ref: '#/definitions/url'
       pointFlag:
         type: "integer"
         format: "int64"
+        example:  1
+        description:  "ポイント表示フラグ　0：ポイント非表示　1：ポイント表示（会員）　｜　Points　displaying flag (membership flag)　0: Do not display points information　1: Display points. information"
       pointServerDomain:
         type: "string"
+        example:  teraoka-pointsystem.com
+        description:  "ポイントサーバードメイン　｜　Points server domain."
       authenticationKey:
         type: "string"
+        example:  sampleAtringAuthenticationKey
+        description:  "認証キー。ポイントサーバー側が発行するUUID　｜　Authentication key.UUID issued from the points server"
       currency:
         type: "string"
+        example:  ¥
+        description:  "通貨記号をセット　｜　Currency symbol"
       currencyPosision:
         type: "integer"
         format: "int64"
+        example:  0
+        description:  "通貨表示位置。0：前　1：後ろ　｜　Currency Position　0:front　1:behind"
       currencyRoundPosision:
         type: "integer"
         format: "int64"
+        example:  1
+        description:  "通貨丸め位置　1：小数点第1位　2：小数点第2位　3：小数点第3位　…　n：小数点第n位　｜　Rounding. 1: Round to the whole number　2: Round to the first decimal point 　3: Round to the second　decimal point … n: Round to the (n - 1)th decimal point"
       zeroPaddingFlag:
         type: "integer"
         format: "int8"
+        example:  0
+        description:  "前0パディングフラグ。商品検索するときに商品コードを　0：ゼロ埋めしない　1：ゼロ埋めする。バーチャルショッピングカートへ登録するときは、設定値に関わらずゼロ埋めしない　｜　Padding flag.  0: Zero pad the item code when searching for items　1: Do not zero pad the item code when searching for items　When an item is registered to the virtual shopping cart, the code is not zero padded regardless of the value of this flag."
       activeFlag:
         type: "integer"
         format: "int8"
-    example:
-      address:
-        address3: "address3"
-        address2: "address2"
-        address1: "address1"
-      enterpriseFlag: 1
-      pointFlag: 5
-      companyName: "companyName"
-      currencyPosision: 5
-      currencyRoundPosision: 2
-      zeroPaddingFlag: 7
-      timeZone: "timeZone"
-      telephone: "telephone"
-      authenticationKey: "authenticationKey"
-      message: "message"
-      result: 0
-      availableTimeFrom: "availableTimeFrom"
-      pointServerDomain: "pointServerDomain"
-      maxScanItems: 6
-      ulrList:
-        ur2: "ur2"
-        ur3: "ur3"
-        url: "url"
-      closeTime: "closeTime"
-      availableTimeTo: "availableTimeTo"
-      storeName: "storeName"
-      location:
-        latitude: "latitude"
-        longitude: "longitude"
-      currency: "currency"
-      openTime: "openTime"
-      activeFlag: 9
+        example:  1
+        description:  "店舗稼働フラグ。0：未稼働　1：稼働　｜　active flag. 0: Inactive　1: Active"
   storePOST:
     type: "object"
     properties:
       companyCode:
         type: "string"
+        example:  "001"
       storeCode:
         type: "string"
+        example:  "001"
       location:
-        $ref: "#/definitions/location"
+        $ref: '#/definitions/location'
       address:
-        $ref: "#/definitions/address"
+        $ref: '#/definitions/address'
       telephone:
         type: "string"
+        example:  03-3752-1057
       openTime:
         type: "string"
+        example:  "09:00:00"
       closeTime:
         type: "string"
+        example:  "17:50:00"
       availableTimeFrom:
         type: "string"
+        example:  "10:00:00"
       availableTimeTo:
         type: "string"
+        example:  "16:59:59"
       maxScanItems:
         type: "integer"
         format: "int64"
+        example:  100
       enterpriseFlag:
         type: "integer"
         format: "int64"
+        example:  1
       timeZone:
         type: "string"
+        example:  +0900
       ulrList:
-        $ref: "#/definitions/url"
+        $ref: '#/definitions/url'
       pointFlag:
         type: "integer"
         format: "int64"
+        example:  0
       pointServerDomain:
         type: "string"
+        example:  
       authenticationKey:
         type: "string"
+        example:  
       currency:
         type: "string"
+        example:  "¥"
       currencyPosition:
         type: "integer"
         format: "int64"
+        example:  0
       currencyRoundPosision:
         type: "integer"
         format: "int64"
+        example:  1
       zeroPaddingFlag:
         type: "integer"
         format: "int8"
+        example:  0
       activeFlag:
         type: "integer"
         format: "int8"
+        example:  1
   successCompanyGet:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       companyName:
         type: "string"
+        example:  株式会社寺岡スーパー
       location:
-        $ref: "#/definitions/location"
+        $ref: '#/definitions/location'
       address:
-        $ref: "#/definitions/address"
+        $ref: '#/definitions/address'
       telephone:
         type: "string"
       ulrList:
-        $ref: "#/definitions/url"
-    example:
-      result: 0
-      address:
-        address3: "address3"
-        address2: "address2"
-        address1: "address1"
-      ulrList:
-        ur2: "ur2"
-        ur3: "ur3"
-        url: "url"
-      companyName: "companyName"
-      location:
-        latitude: "latitude"
-        longitude: "longitude"
-      telephone: "telephone"
-      message: "message"
+        $ref: '#/definitions/url'
   companyPost:
     type: "object"
     properties:
       companyCode:
         type: "string"
+        example:  "001"
       companyName:
         type: "string"
+        example:  株式会社寺岡スーパー
       location:
-        $ref: "#/definitions/location"
+        $ref: '#/definitions/location'
       address:
-        $ref: "#/definitions/address"
+        $ref: '#/definitions/address'
       telephone:
         type: "string"
+        example:  "03-3752-1057"
       ulrList:
-        $ref: "#/definitions/url"
+        $ref: '#/definitions/url'
   successItemGET:
     type: "object"
+    required: [
+      result,
+      itemType,
+      warningType,
+      barcode,
+      name,
+      price,
+      taxList
+      ]
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
+        description:  "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
+        example:  success
+        description:  "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
       itemType:
         type: "integer"
+        example:  0
+        description:  "商品タイプ。0：通常商品　10：ばら売り商品　20：定貫商品　30：不定貫商品　40：メートル売り　500：灯油　600：衣料　700：書籍　800：無償商品　900：免税商品　｜　item type.　0: Normal item　10: Separately sold item　20: You can change the quantity of this item.　30: You cannot change the quantity of this item.　40: Item sold by length　500: Kerosene　600: Clothing　700: Book　800: Item with no commercial value　900: Duty-free item"
       warningTyepe:
         type: "integer"
+        example:  0
+        description:  "警告タイプ。　0：通常商品（警告なし）　100：酒　110：タバコ　200：防犯タグ商品　300：一類医薬品　310：二類医薬品　320：三類医薬品　999：Shop&Go取扱い不可商品　｜　Warning type.　0: Normal item ( No warning)　100: Alcohol　110: Tobacco　300: Class 1 pharmaceutical　310: Class 2 pharmaceutical　320: Class 3 pharmaceutical　999：Shop & Go Unprocessable items"
       reduceTaxFlag:
         type: "integer"
+        example:  0
+        description:  "軽減税率フラグ。　0：通常商品　1：軽減税率対象商品　｜　Item with reduction tax rate.　0: Normal item　1: Item subject to reduced tax rate"
       barcode:
         type: "string"
+        example:  4901002132460
+        description:  "商品マスタに設定されている商品コード　｜　Item code set in the item master"
       name:
         type: "string"
+        example:  S&B 予約でいっぱいの店のイカスミソース
+        description:  "商品名称。（衣料商品の場合は「衣類」固定）　｜　Name.   Fixed to 'Clothing' for clothing items"
       price:
         type: "string"
+        example:  
+        description:  "商品単価。（衣類/書籍の場合は返却不要）　｜　Unit price. Not applicable for clothing or book items"
       discountList:
-        $ref: "#/definitions/discountList"
+        $ref: '#/definitions/discountList'
       unitOfMeasurement:
         type: "string"
+        description:  "測定単位。quantityに対する単位。（g, kg, 個……）　｜　unit of measurement. The unit of measurement of the value of quantity. (e.g. g, kg, pcs, etc.)"
       taxList:
-        $ref: "#/definitions/taxList"
-    example:
-      result: 0
-      reduceTaxFlag: 5
-      unitOfMeasurement: "unitOfMeasurement"
-      discountList:
-        code: "code"
-        establishmentQuantity: 5
-        name: "name"
-        discountPrice: "discountPrice"
-      taxList:
-        rate: 7
-        type: 2
-      itemType: 6
-      warningTyepe: 1
-      price: "price"
-      name: "name"
-      message: "message"
-      barcode: "barcode"
+        $ref: '#/definitions/taxList'
   discountList:
     type: "object"
     properties:
       code:
         type: "string"
+        example:  001
       name:
         type: "string"
+        example:  表示価格から20%引き
       discountPrice:
         type: "string"
+        example:  42
       establishmentQuantity:
         type: "integer"
         format: "int8"
-    example:
-      code: "code"
-      establishmentQuantity: 5
-      name: "name"
-      discountPrice: "discountPrice"
+        example:  1
   taxList:
     type: "object"
+    required: [
+      type,
+      rate
+      ]
     properties:
       type:
         type: "integer"
         format: "int8"
+        example:  0
+        description:  "税タイプ。　0：外税　1：内税　2：非課税　｜　tax list. 　0: Tax excluded　1: Tax included　2: Non taxable"
       rate:
         type: "integer"
         format: "int8"
-    example:
-      rate: 7
-      type: 2
+        example:  8
+        description:  "税率　｜　Tax rate"
   itemPOST:
     type: "object"
     properties:
       itemType:
         type: "integer"
+        format: "int8"
+        example:  0
       warningTyepe:
         type: "integer"
+        format: "int8"
+        example:  0
       reduceTaxFlag:
         type: "integer"
+        format: "int8"
+        example:  0
       barcode:
         type: "string"
+        example:  4901002132460
       name:
         type: "string"
+        example:  S&B予約でいっぱいの店のイカスミソース
       price:
         type: "string"
+        example:  206
       discountList:
-        $ref: "#/definitions/discountList"
+        $ref: '#/definitions/discountList'
       unitOfMeasurement:
         type: "string"
+        example:  "個"
       taxList:
-        $ref: "#/definitions/taxList"
+        $ref: '#/definitions/taxList'
   successPluralGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       itemsURL:
         type: "string"
-    example:
-      result: 0
-      itemsURL: "itemsURL"
-      message: "message"
+        example:  https://fssf.digi-thq.com/v1/company/123456789/store/123456789/plural-items/11111
   successPluralStatusGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       progress:
         type: "integer"
         format: "int8"
-    example:
-      result: 0
-      progress: 6
-      message: "message"
+        example:  0
   successCartIDGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       startTime:
         type: "string"
+        example:  "2019-01-01 10:00:00"
       itemList:
         type: "array"
         items:
-          $ref: "#/definitions/successCartIDGET_itemList"
-    example:
-      result: 0
-      startTime: "startTime"
-      itemList:
-      - quantity: 1
-        price: 5
-        scanStatus: 6
-        ID: "ID"
-        barcode: "barcode"
-        barcode2: "barcode2"
-      - quantity: 1
-        price: 5
-        scanStatus: 6
-        ID: "ID"
-        barcode: "barcode"
-        barcode2: "barcode2"
-      message: "message"
+          type: "object"
+          properties:
+            ID:
+              type: "string"
+              example:  E08F1CC6-9B2D-46AA-9751-18C72E25DDE2
+            scanStatus:
+              type: "integer"
+              format: "int8"
+              example:  0
+            barcode:
+              type: "string"
+              example:  "4901002132460"
+            barcode2:
+              type: "string"
+              example:  ""
+            quantity:
+              type: "integer"
+              format: "int8"
+              example:  1
+            price:
+              type: "integer"
+              format: "int8"
+              example:  166
   appCartPOST:
     type: "object"
+    required: [
+      result,
+      message,
+      cartID,
+      startTime
+      ]
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
+        description:  "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
+        example:  success
+        description:  "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
       cartID:
         type: "string"
+        example:  295CE2A3-7777-44F2-9380-FF9A87F3AA97
+        description:  "ショッピングカートID。企業、店舗、APIキー、タイムスタンプで一意に決まるハッシュetc.　｜　Shopping cart ID. UUID of the purchase list Hash generated by using the company code, store code, API key, and timestamp as keys"
       startTime:
         type: "string"
-    example:
-      result: 0
-      cartID: "cartID"
-      startTime: "startTime"
-      message: "message"
+        example:  "2019-01-01 10:00:00"
+        description:  "買い物開始時間。レコードが生成された時間　｜　The time when the transaction started."
   appItemPOST:
     type: "object"
+    required: [
+      itemList
+      ]
     properties:
-      ID:
-        type: "string"
-      scanStatus:
-        type: "integer"
-        format: "int8"
-      barcode:
-        type: "string"
-      barcode2:
-        type: "string"
-      quantity:
-        type: "integer"
-        format: "int8"
-      price:
-        type: "integer"
-        format: "int8"
-    example:
-      quantity: 6
-      price: 1
-      scanStatus: 0
-      ID: "ID"
-      barcode: "barcode"
-      barcode2: "barcode2"
+      itemList:
+        type: array
+        items:
+          required: [
+            ID,
+            scanStatus,
+            barcode,
+            quantity,
+            price
+            ]
+          properties:
+            ID:
+              type: "string"
+              example:  E08F1CC6-9B2D-46AA-9751-18C72E25DDE2
+              description:  "購入リスト内の商品特定用UUID　｜　item ID. UUID of a certain item within the purchase list"
+            scanStatus:
+              type: "integer"
+              format: "int8"
+              example:  0
+              description:  "0：購入済み商品　10：計量済み商品（元300:未計量） 100：保留状態の商品（nonFile） 101：保留状態の商品（読取不能） 200：保留状態の商品（取り消された商品） 300：保留状態の商品（未計量商品） 400：年齢確認待ちの商品(酒、タバコ） 401：防犯タグ商品（店員対応必須商品） 410：第１類医薬品用 411：第１類医薬品以外　｜　item status. 0: Purchased item 100: Pending item (NonFile item) 101: Pending item (Unidentifiable) 200: Pending item (Cancelled item) 300: Pending item (Items that have not been weighed) 400: Item which require age verification (e.g. alcohol, tobacco) 401: Item with security tag (Assistance by store associate necessary) 410: Class 1 pharmaceuticals　411: Non-Class 1 pharmaceuticals"
+            barcode:
+              type: "string"
+              example:  "4901002132460"
+              description:  "バーコード文字列（マスク前）　｜　Barcode data before masking"
+            barcode2:
+              type: "string"
+              example:  ""
+              description:  "２段バーコード用（書籍、衣類など）　｜　For items with two sets of barcodes such as books and clothing."
+            quantity:
+              type: "integer"
+              format: "int8"
+              example:  1
+              description:  "最大９９まで　｜　Maximum value: 99"
+            price:
+              type: "integer"
+              format: "int8"
+              example:  166
+              description:  "商品の単価　｜　Unit price of item"
   appCartStatusGET:
     type: "object"
+    required: [
+      result,
+      message,
+      cartStatus
+      ]
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
+        description:  "リザルトステータス。結果　0：正常終了　0以外：エラー終了 | Result status. 0: Normal endOther than 0: Error end"
       message:
         type: "string"
+        example:  success
+        description:  "メッセージ。successまたはerrorが返る。 | message. success or error is returned"
       cartStatus:
         type: "integer"
         format: "int8"
-    example:
-      result: 0
-      cartStatus: 6
-      message: "message"
+        example:  10
+        description:  "カートステータス。　0：商品データが存在しない（買い物中）　10：商品があり、POS端末がデータ受信済み（POS端末がQRスキャン済）　11：商品の購入処理完了済み（支払い完了）　12：商品の購入がPOS端末側でキャンセル（POS端末で取消）　20：商品データ登録済 / POS側アクセス形跡なし（QR作成済）　｜　cart status.　0: No item data found (Still shopping and not ready for payment yet)　10: Item data found, POS terminal already received the data (QR code already scanned at POS terminal)　11: Purchase of item complete (Payment complete)　12: Item cancelled at POS terminal　20: Item data found, has not been accessed by POS terminals (QR already created)"
   appCartStatusPATCH:
     type: "object"
+    required: [
+      cartStatus
+      ]
     properties:
       cartStatus:
         type: "integer"
         format: "int8"
+        description:  "カートステータス。20：商品データ登録済 / POS側アクセス形跡なし（QR作成済）　｜　cart status. 20: Item data found, has not been accessed by POS terminals (QR already created)"
+
   REGICartStatusGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  "success"
       cartStatus:
         type: "integer"
         format: "int8"
-    example:
-      result: 0
-      cartStatus: 6
-      message: "message"
+        example:  20
   REGICartStatusPATCH:
     type: "object"
     properties:
       cartStatus:
         type: "integer"
         format: "int8"
-    example:
-      cartStatus: 0
+
   CRStaffGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       staffCode:
         type: "string"
+        example:  "1"
       staffName:
         type: "string"
-    example:
-      result: 0
-      staffCode: "staffCode"
-      staffName: "staffName"
-      message: "message"
+        example:  寺岡太郎
   CRDepartmentGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       departmentCode:
         type: "string"
+        example:  0007831
       departmentName:
         type: "string"
-    example:
-      result: 0
-      departmentName: "departmentName"
-      departmentCode: "departmentCode"
-      message: "message"
+        example:  パスタソース
   CRItemGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       barcode:
         type: "string"
+        example:  4901002132460
       barcode2:
         type: "string"
+        example:  
       name:
         type: "string"
+        example:  S&B予約でいっぱいの店のイカスミソース
       price:
         type: "integer"
         format: "int8"
+        example:  166
       weighrType:
         type: "integer"
         format: "int8"
+        example:  0
       quantity:
         type: "integer"
         format: "int8"
+        example:  1
       unitOfMeasurement:
-        type: "integer"
-        format: "int8"
-    example:
-      result: 0
-      unitOfMeasurement: 5
-      quantity: 5
-      price: 6
-      weighrType: 1
-      name: "name"
-      message: "message"
-      barcode: "barcode"
-      barcode2: "barcode2"
-  CRSubtotal-paraPOST:
+        type: "string"
+        example:  個
+  CRSubtotal_paraPOST:
     type: "object"
     properties:
       paymentCode:
         type: "string"
+        example:  digi001
       startTime:
         type: "string"
+        example:  "2019-01-01 10:00:00"
       companyCode:
         type: "string"
+        example:  "001"
       companyName:
         type: "string"
+        example:  株式会社寺岡スーパー
       storeCode:
         type: "string"
+        example:  "001"
       storeName:
         type: "string"
+        example:  "寺岡スーパー久が原店"
       memberList:
-        $ref: "#/definitions/memberCode"
+        $ref: '#/definitions/memberCode'
       subtotalRequestTime:
         type: "string"
+        example:  "2019-01-01 10:23:59"
       receiptNum:
         type: "string"
+        example:  "00101"
       cartID:
         type: "string"
+        example:  295CE2A3-7777-44F2-9380-FF9A87F3AA97
       paymentTypeList:
-        $ref: "#/definitions/paymentTypeList-subtotal"
+        $ref: '#/definitions/paymentTypeList_subtotal'
       itemList:
-        $ref: "#/definitions/itemList"
-    example:
-      companyCode: "companyCode"
-      memberList:
-        code: "code"
-      paymentCode: "paymentCode"
-      receiptNum: "receiptNum"
-      paymentTypeList:
-        type: "type"
-      companyName: "companyName"
-      cartID: "cartID"
-      startTime: "startTime"
-      storeName: "storeName"
-      itemList:
-        price: 1
-        scanStatus: 0
-        quantitiy: 6
-        ID: "ID"
-        barcode: "barcode"
-        barcode2: "barcode2"
-      subtotalRequestTime: "subtotalRequestTime"
-      storeCode: "storeCode"
+        $ref: '#/definitions/itemList'
   CRSubtotal-resPOST:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
+        example:  success
       paymentCode:
         type: "string"
+        example:  digi001
       startTime:
-        type: "string"
+        type: "string" 
+        example:  "2019-01-01 10:00:00"
       memberList:
-        $ref: "#/definitions/memberList"
+        $ref: '#/definitions/memberList'
       subtotalRequestTime:
         type: "string"
+        example:  "2019-01-01 10:23:59"
       receiptNum:
         type: "string"
+        example:  "00101"
       cartID:
         type: "string"
-      total:
+        example:  295CE2A3-7777-44F2-9380-FF9A87F3AA97
+      total: 
         type: "integer"
         format: "int8"
-      subtotal:
+        example:  179
+      subtotal: 
         type: "integer"
         format: "int8"
-      totalQuantity:
+        example:  166
+      totalQuantity: 
         type: "integer"
         format: "int8"
-      totalDiscount:
+        example:  1
+      totalDiscount: 
         type: "integer"
         format: "int8"
-      itemTotalDiscount:
+        example:  0
+      itemTotalDiscount: 
         type: "integer"
         format: "int8"
-      subTotalDiscount:
+        example:  0
+      subTotalDiscount: 
         type: "integer"
         format: "int8"
+        example:  0
       subTotalDiscountList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_subTotalDiscountList"
-      totalService:
+          properties:
+            name:
+              type: "string"
+              example:  
+            discountPrice:
+              type: "integer"
+              format: "int8"
+              example:  
+      totalService: 
         type: "integer"
         format: "int8"
-      itemTotalService:
+        example:  0
+      itemTotalService: 
         type: "integer"
         format: "int8"
-      subTotalService:
+        example:  0
+      subTotalService: 
         type: "integer"
         format: "int8"
+        example:  0
       subTotalServiceList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_subTotalServiceList"
-      taxAmount:
+          properties:
+            name:
+              type: "string"
+              example:  
+            servicePrice:
+              type: "integer"
+              format: "int8"
+              example:  
+      taxAmount: 
         type: "integer"
         format: "int8"
+        example:  13
       taxList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_taxList"
+          properties:
+            code:
+              type: "string"
+              example:  1
+            name:
+              type: "string"
+              example:  消費税(外)
+            rate:
+              type: "integer"
+              format: "int8"
+              example:  8
+            taxableAmout:
+              type: "integer"
+              format: "int8"
+              example:  166
+            amount:
+              type: "integer"
+              format: "int8"
+              example:  13
       itemList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_itemList"
+          properties:
+            ID:
+              type: "string"
+              example:  E08F1CC6-9B2D-46AA-9751-18C72E25DDE2
+            scanStatus:
+              type: "integer"
+              format: "int8"
+              example:  0
+            barcode:
+              type: "string"
+              example:  4901002132460
+            barcode2:
+              type: "string"
+              example:  
+            name:
+              type: "string"
+              example:  S&B予約でいっぱいの店のイカスミソース
+            quantity:
+              type: "integer"
+              format: "int8"
+              example:  1
+            memberFlag:
+              type: "integer"
+              format: "int8"
+              example:  0
+            price:
+              type: "integer"
+              format: "int8"
+              example:  206
+            calculatedPrice:
+              type: "integer"
+              format: "int8"
+              example:  166
+            weightType:
+              type: "integer"
+              format: "int8"
+              example:  0
+            unitOfMeasurement:
+              type: "string"
+              example:  個
+            taxList:
+              $ref: '#/definitions/taxList_subtotal'
+            discountList:
+              $ref: '#/definitions/discountList_subtotal'
+            serviceList:
+              $ref: '#/definitions/serviceList_subtotal'
       totalRoundAmount:
         type: "integer"
         format: "int8"
-    example:
-      totalRoundAmount: 6
-      receiptNum: "receiptNum"
-      cartID: "cartID"
-      subTotalServiceList:
-      - servicePrice: 1
-        name: "name"
-      - servicePrice: 1
-        name: "name"
-      totalService: 7
-      itemTotalService: 1
-      subTotalService: 1
-      message: "message"
-      itemTotalDiscount: 3
-      subTotalDiscountList:
-      - name: "name"
-        discountPrice: 4
-      - name: "name"
-        discountPrice: 4
-      result: 0
-      taxList:
-      - amount: 4
-        code: "code"
-        rate: 7
-        name: "name"
-        taxableAmout: 1
-      - amount: 4
-        code: "code"
-        rate: 7
-        name: "name"
-        taxableAmout: 1
-      total: 5
-      memberList:
-        code: "code"
-        availableAmount: 5
-        name: "name"
-        memberType: "memberType"
-        point: 6
-        addPoint: 1
-      totalQuantity: 7
-      paymentCode: "paymentCode"
-      subTotalDiscount: 2
-      subtotal: 2
-      totalDiscount: 9
-      startTime: "startTime"
-      itemList:
-      - calculatedPrice: 8
-        unitOfMeasurement: "unitOfMeasurement"
-        discountList: ""
-        quantity: 9
-        scanStatus: 5
-        barcode2: "barcode2"
-        memberFlag: 9
-        weightType: 9
-        taxList: ""
-        price: 6
-        name: "name"
-        serviceList: ""
-        ID: "ID"
-        barcode: "barcode"
-      - calculatedPrice: 8
-        unitOfMeasurement: "unitOfMeasurement"
-        discountList: ""
-        quantity: 9
-        scanStatus: 5
-        barcode2: "barcode2"
-        memberFlag: 9
-        weightType: 9
-        taxList: ""
-        price: 6
-        name: "name"
-        serviceList: ""
-        ID: "ID"
-        barcode: "barcode"
-      taxAmount: 6
-      subtotalRequestTime: "subtotalRequestTime"
+        example:  0
   itemList:
     type: "object"
     properties:
       ID:
         type: "string"
+        example:  E08F1CC6-9B2D-46AA-9751-18C72E25DDE2
       scanStatus:
         type: "integer"
+        example:  0
       barcode:
         type: "string"
+        example:  4901002132460
       barcode2:
         type: "string"
+        example:  
       quantitiy:
         type: "integer"
         format: "int8"
+        example:  1
       price:
         type: "integer"
-        format: "int8"
-    example:
-      price: 1
-      scanStatus: 0
-      quantitiy: 6
-      ID: "ID"
-      barcode: "barcode"
-      barcode2: "barcode2"
+        format: "int64"
+        example:  0
   taxList_subtotal:
     type: "array"
     items:
-      $ref: "#/definitions/taxList_subtotal_inner"
+      properties:
+        type:
+          type: "string"
+          example:  0
+        code:
+          type: "string"
+          example:  1234
+        name:
+          type: "string"
+          example:  消費税
+        rate:
+          type: "integer"
+          format: "int8"
+          example:  8
+        taxableAmout:
+          type: "integer"
+          format: "int8"
+          example:  166
+        amount:
+          type: "integer"
+          format: "int8"
+          example:  13
   discountList_subtotal:
     type: "array"
     items:
-      $ref: "#/definitions/discountList_subtotal_inner"
+      properties:
+        code:
+          type: "string"
+          example:  
+        name:
+          type: "string"
+          example:  
+        discountPrice:
+          type: "string"
+          example:  
+        establishmentQuantity:
+          type: "integer"
+          format: "int8"
+          example:  
   serviceList_subtotal:
     type: "array"
     items:
-      $ref: "#/definitions/serviceList_subtotal_inner"
+      properties:
+        code:
+          type: "string"
+          example:  
+        name:
+          type: "string"
+          example:  
+        servicePrice:
+          type: "string"
+          example:  
   CRResultPOST:
     type: "object"
     properties:
       paymentCode:
         type: "string"
+        example:  digi001
       startTime:
         type: "string"
+        example:  "2019-01-01 10:00:00"
       memberList:
-        $ref: "#/definitions/memberList"
+        $ref: '#/definitions/memberList'
       subtotalRequestTime:
         type: "string"
+        example:  "2019-01-01 10:23:59"
       receiptNum:
         type: "string"
+        example:  "00101"
       cartID:
         type: "string"
-      total:
+        example:  295CE2A3-7777-44F2-9380-FF9A87F3AA97
+      total: 
         type: "integer"
         format: "int8"
-      subtotal:
+        example:  179
+      subtotal: 
         type: "integer"
         format: "int8"
-      totalQuantity:
+        example:  166
+      totalQuantity: 
         type: "integer"
         format: "int8"
-      totalDiscount:
+        example:  1
+      totalDiscount: 
         type: "integer"
         format: "int8"
-      itemTotalDiscount:
+        example:  0
+      itemTotalDiscount: 
         type: "integer"
         format: "int8"
-      subTotalDiscount:
+        example:  0
+      subTotalDiscount: 
         type: "integer"
         format: "int8"
+        example:  0
       subTotalDiscountList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_subTotalDiscountList"
-      totalService:
+          properties:
+            name:
+              type: "string"
+              example:  
+            discountPrice:
+              type: "integer"
+              format: "int8"
+              example:  
+      totalService: 
         type: "integer"
         format: "int8"
-      itemTotalService:
+        example:  0
+      itemTotalService: 
         type: "integer"
         format: "int8"
-      subTotalService:
+        example:  0
+      subTotalService: 
         type: "integer"
         format: "int8"
+        example:  0
       subTotalServiceList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_subTotalServiceList"
-      taxAmount:
+          properties:
+            name:
+              type: "string"
+              example:  
+            servicePrice:
+              type: "integer"
+              format: "int8"
+              example:  
+      taxAmount: 
         type: "integer"
         format: "int8"
+        example:  13
       taxList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_taxList"
+          properties:
+            code:
+              type: "string"
+              example:  "1"
+            name:
+              type: "string"
+              example:  消費税(外)
+            rate:
+              type: "integer"
+              format: "int8"
+              example:  8
+            taxableAmout:
+              type: "integer"
+              format: "int8"
+              example:  166
+            amount:
+              type: "integer"
+              format: "int8"
+              example:  13
       itemList:
         type: "array"
         items:
-          $ref: "#/definitions/CRSubtotalresPOST_itemList"
+          properties:
+            ID:
+              type: "string"
+              example:  "digi001"
+            scanStatus:
+              type: "integer"
+              format: "int8"
+              example:  0
+            barcode:
+              type: "string"
+              example:  4901002132460
+            barcode2:
+              type: "string"
+              example:  
+            name:
+              type: "string"
+              example:  S&B予約でいっぱいの店のイカスミソース
+            quantity:
+              type: "integer"
+              format: "int8"
+              example:  1
+            memberFlag:
+              type: "integer"
+              format: "int8"
+              example:  0
+            price:
+              type: "integer"
+              format: "int8"
+              example:  206
+            calculatedPrice:
+              type: "integer"
+              format: "int8"
+              example:  166
+            weightType:
+              type: "integer"
+              format: "int8"
+              example:  0
+            unitOfMeasurement:
+              type: "string"
+              example:  "個"
+            taxList:
+              $ref: '#/definitions/taxList_subtotal'
+            discountList:
+              $ref: '#/definitions/discountList_subtotal'
+            serviceList:
+              $ref: '#/definitions/serviceList_subtotal'
       totalRoundAmount:
         type: "integer"
         format: "int8"
       paymentTypeList:
         type: "array"
         items:
-          $ref: "#/definitions/paymentTypeList-Res-subtotal"
+          $ref: '#/definitions/paymentTypeList-Res-subtotal'
       cancelFlag:
         type: "integer"
         format: "int8"
-    example:
-      totalRoundAmount: 4
-      receiptNum: "receiptNum"
-      cartID: "cartID"
-      subTotalServiceList:
-      - servicePrice: 1
-        name: "name"
-      - servicePrice: 1
-        name: "name"
-      totalService: 7
-      itemTotalService: 9
-      subTotalService: 3
-      itemTotalDiscount: 5
-      cancelFlag: 1
-      subTotalDiscountList:
-      - name: "name"
-        discountPrice: 4
-      - name: "name"
-        discountPrice: 4
-      taxList:
-      - amount: 4
-        code: "code"
-        rate: 7
-        name: "name"
-        taxableAmout: 1
-      - amount: 4
-        code: "code"
-        rate: 7
-        name: "name"
-        taxableAmout: 1
-      total: 0
-      memberList:
-        code: "code"
-        availableAmount: 5
-        name: "name"
-        memberType: "memberType"
-        point: 6
-        addPoint: 1
-      totalQuantity: 1
-      paymentCode: "paymentCode"
-      subTotalDiscount: 2
-      paymentTypeList:
-      - paymentCode: "paymentCode"
-        price: 7
-        type: "type"
-      - paymentCode: "paymentCode"
-        price: 7
-        type: "type"
-      subtotal: 6
-      totalDiscount: 5
-      startTime: "startTime"
-      itemList:
-      - calculatedPrice: 8
-        unitOfMeasurement: "unitOfMeasurement"
-        discountList: ""
-        quantity: 9
-        scanStatus: 5
-        barcode2: "barcode2"
-        memberFlag: 9
-        weightType: 9
-        taxList: ""
-        price: 6
-        name: "name"
-        serviceList: ""
-        ID: "ID"
-        barcode: "barcode"
-      - calculatedPrice: 8
-        unitOfMeasurement: "unitOfMeasurement"
-        discountList: ""
-        quantity: 9
-        scanStatus: 5
-        barcode2: "barcode2"
-        memberFlag: 9
-        weightType: 9
-        taxList: ""
-        price: 6
-        name: "name"
-        serviceList: ""
-        ID: "ID"
-        barcode: "barcode"
-      taxAmount: 2
-      subtotalRequestTime: "subtotalRequestTime"
+        example:  0
+
   CRMemberGET:
     type: "object"
     properties:
-      result:
+      result: 
         type: "integer"
         format: "int64"
+        example:  0
       message:
         type: "string"
-    example:
-      result: 0
-      message: "message"
+        example:  success
+      memberCode:
+        type: "string"
+        example:  "12345678901234567890"
+      name:
+        type: "string"
+        example:  寺岡太郎
+      point:
+        type: "string"
+        example:  415411
+      
   memberCode:
     type: "object"
     properties:
       code:
         type: "string"
-    example:
-      code: "code"
+        example:  "12345678901234567890"
   memberList:
     type: "object"
     properties:
       code:
         type: "string"
+        example:  464988415411
       name:
         type: "string"
+        example:  寺岡太郎
       point:
         type: "integer"
         format: "int8"
+        example:  4154
       addPoint:
         type: "integer"
         format: "int8"
+        example:  72
       availableAmount:
         type: "integer"
         format: "int8"
+        example:  0
       memberType:
         type: "string"
-    example:
-      code: "code"
-      availableAmount: 5
-      name: "name"
-      memberType: "memberType"
-      point: 6
-      addPoint: 1
-  paymentTypeList-subtotal:
+        example:  
+
+  paymentTypeList_subtotal:
     type: "object"
     properties:
       type:
         type: "string"
-    example:
-      type: "type"
+        example:  "0"
   paymentTypeList-Res-subtotal:
     type: "object"
     properties:
       type:
         type: "string"
+        example:  02
       paymentCode:
         type: "string"
+        example:  "************0000"
       price:
         type: "integer"
         format: "int8"
-    example:
-      paymentCode: "paymentCode"
-      price: 7
-      type: "type"
-  error_errorList:
-    properties:
-      code:
-        type: "string"
-        example: "12345"
-      message:
-        type: "string"
-        example: "network error"
-  successStoreList_storeList:
-    properties:
-      company:
-        $ref: "#/definitions/company"
-      store:
-        $ref: "#/definitions/store"
-      location:
-        $ref: "#/definitions/location"
-      address:
-        $ref: "#/definitions/address"
-      url:
-        $ref: "#/definitions/url"
-    example:
-      address:
-        address3: "address3"
-        address2: "address2"
-        address1: "address1"
-      company:
-        code: 6.02745618307040320615897144307382404804229736328125
-        name: "name"
-      location:
-        latitude: "latitude"
-        longitude: "longitude"
-      store:
-        code: 1.46581298050294517310021547018550336360931396484375
-        name: "name"
-      url:
-        ur2: "ur2"
-        ur3: "ur3"
-        url: "url"
-  successCartIDGET_itemList:
-    properties:
-      ID:
-        type: "string"
-      scanStatus:
-        type: "integer"
-        format: "int8"
-      barcode:
-        type: "string"
-      barcode2:
-        type: "string"
-      quantity:
-        type: "integer"
-        format: "int8"
-      price:
-        type: "integer"
-        format: "int8"
-    example:
-      quantity: 1
-      price: 5
-      scanStatus: 6
-      ID: "ID"
-      barcode: "barcode"
-      barcode2: "barcode2"
-  CRSubtotalresPOST_subTotalDiscountList:
-    properties:
-      name:
-        type: "string"
-      discountPrice:
-        type: "integer"
-        format: "int8"
-    example:
-      name: "name"
-      discountPrice: 4
-  CRSubtotalresPOST_subTotalServiceList:
-    properties:
-      name:
-        type: "string"
-      servicePrice:
-        type: "integer"
-        format: "int8"
-    example:
-      servicePrice: 1
-      name: "name"
-  CRSubtotalresPOST_taxList:
-    properties:
-      code:
-        type: "string"
-      name:
-        type: "string"
-      rate:
-        type: "integer"
-        format: "int8"
-      taxableAmout:
-        type: "integer"
-        format: "int8"
-      amount:
-        type: "integer"
-        format: "int8"
-    example:
-      amount: 4
-      code: "code"
-      rate: 7
-      name: "name"
-      taxableAmout: 1
-  CRSubtotalresPOST_itemList:
-    properties:
-      ID:
-        type: "string"
-      scanStatus:
-        type: "integer"
-        format: "int8"
-      barcode:
-        type: "string"
-      barcode2:
-        type: "string"
-      name:
-        type: "string"
-      quantity:
-        type: "integer"
-        format: "int8"
-      memberFlag:
-        type: "integer"
-        format: "int8"
-      price:
-        type: "integer"
-        format: "int8"
-      calculatedPrice:
-        type: "integer"
-        format: "int8"
-      weightType:
-        type: "integer"
-        format: "int8"
-      unitOfMeasurement:
-        type: "string"
-      taxList:
-        $ref: "#/definitions/taxList_subtotal"
-      discountList:
-        $ref: "#/definitions/discountList_subtotal"
-      serviceList:
-        $ref: "#/definitions/serviceList_subtotal"
-    example:
-      calculatedPrice: 8
-      unitOfMeasurement: "unitOfMeasurement"
-      discountList: ""
-      quantity: 9
-      scanStatus: 5
-      barcode2: "barcode2"
-      memberFlag: 9
-      weightType: 9
-      taxList: ""
-      price: 6
-      name: "name"
-      serviceList: ""
-      ID: "ID"
-      barcode: "barcode"
-  taxList_subtotal_inner:
-    properties:
-      type:
-        type: "string"
-      code:
-        type: "string"
-      name:
-        type: "string"
-      rate:
-        type: "integer"
-        format: "int8"
-      taxableAmout:
-        type: "integer"
-        format: "int8"
-      amount:
-        type: "integer"
-        format: "int8"
-  discountList_subtotal_inner:
-    properties:
-      code:
-        type: "string"
-      name:
-        type: "string"
-      discountPrice:
-        type: "string"
-      establishmentQuantity:
-        type: "integer"
-        format: "int8"
-  serviceList_subtotal_inner:
-    properties:
-      code:
-        type: "string"
-      name:
-        type: "string"
-      servicePrice:
-        type: "string"
+        example:  179
+
